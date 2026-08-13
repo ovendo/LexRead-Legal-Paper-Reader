@@ -1,0 +1,8 @@
+@font-face {
+  font-family: "LexSans";
+  src: local("PingFang SC"), local("Microsoft YaHei"), local("Noto Sans CJK SC");
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #05080f; }
+body { font-family: LexSans, Inter, system-ui, sans-serif; }
