@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createAnnotation as createRemoteAnnotation, deleteAnnotation as deleteRemoteAnnotation, formatDocument, getApiHealth, getDocument, getDocumentFileUrl, getDocumentText, getJob, saveAnalysisNodeStatus, saveReadingPosition, searchDocument, startDocumentAnalysis, syncDocumentAnnotations, toResearchDocument, translateDocumentText, askAiAboutText, updateAnnotation as updateRemoteAnnotation, type ApiHealth, type DocumentSearchResult, type ServerBlock, type ServerDocument, type ServerJob } from "../api";
 import { AppShell } from "../components/Layout";
 import { Badge, Button } from "../components/UI";
+import { FULL_VERSION_URL } from "../demo";
 import { useRouter } from "../router";
 import { useAppStore } from "../store";
 import type { AnnotationKind, CardType, HighlightColor, LegalReadingGuide, LegalReadingInsight, NodeStatus, ReadingAnnotation, ReadingNode } from "../types";
@@ -456,7 +457,7 @@ export function PaperReaderPage() {
   if (loadingDocument) return <ReaderState title="正在打开论文" detail="正在加载原文、目录和阅读位置…" />;
   if (loadError && !doc) return <ReaderState title="无法打开论文" detail={loadError} action={() => navigate("/workspace/upload-parse")} />;
   if (!doc) return <ReaderState title="还没有可阅读的论文" detail="请先上传并完成 PDF 基础解析。" action={() => navigate("/workspace/upload-parse")} />;
-  if (!isServerDocument && !node) return <ReaderState title="演示文档没有原始 PDF" detail="请上传真实 PDF 后开始自由阅读。" action={() => navigate("/workspace/upload-parse")} />;
+  if (!isServerDocument && !node) return <ReaderState title="体验完整论文阅读" detail="请下载完整版体验 PDF 阅读、OCR 与 AI 分析功能。" actionLabel="下载完整版" action={() => { window.location.href = FULL_VERSION_URL; }} />;
 
   const goToPage = (nextPage: number, blockId: string | null = null) => {
     const bounded = Math.max(1, Math.min(doc.pages, nextPage));
@@ -1300,8 +1301,8 @@ function AnnotatedText({
   })}</>;
 }
 
-function ReaderState({ title, detail, action }: { title: string; detail: string; action?: () => void }) {
-  return <AppShell sidebar={false} full><div className="reader-state"><FileText size={34} /><h1>{title}</h1><p>{detail}</p>{action && <Button onClick={action}>返回上传页</Button>}</div></AppShell>;
+function ReaderState({ title, detail, action, actionLabel = "返回上传页" }: { title: string; detail: string; action?: () => void; actionLabel?: string }) {
+  return <AppShell sidebar={false} full><div className="reader-state"><FileText size={34} /><h1>{title}</h1><p>{detail}</p>{action && <Button onClick={action}>{actionLabel}</Button>}</div></AppShell>;
 }
 
 function AiQueryPopup({

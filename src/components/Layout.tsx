@@ -30,7 +30,7 @@ export function TopNav() {
     return () => window.removeEventListener("lexread:open-api-settings", openSettings);
   }, []);
 
-  const statusLabel = IS_DEMO ? "演示模式" : health === null ? "检查中" : health.configured ? "已配置" : "未配置";
+  const statusLabel = IS_DEMO ? "在线体验" : health === null ? "检查中" : health.configured ? "已配置" : "未配置";
 
   return <>
     <header className="top-nav">
@@ -209,7 +209,7 @@ export function AppShell({ children, sidebar = true, projectSidebar = false, ful
   }, []);
   return <div className="app-root">
     <TopNav />
-    {IS_DEMO && <div className="demo-banner" role="status"><strong>在线演示</strong><span>当前使用预置研究数据；上传 PDF、OCR 和 AI 分析请下载完整版体验。</span><a href={FULL_VERSION_URL} download>下载完整版</a></div>}
+    {IS_DEMO && <div className="demo-banner" role="status"><strong>在线演示</strong><span>当前使用预置研究数据，完整功能请下载完整版体验。</span><a href={FULL_VERSION_URL} download>下载完整版</a></div>}
     <div className={cx("app-layout", !sidebar && "no-sidebar", full && "is-full")}>{sidebar && <ProjectSidebar mode={projectSidebar ? "project" : "workspace"} />}<main className="app-main">{children}</main></div>
     {state.toast && <div className="toast"><span>✓</span>{state.toast}</div>}
     <button className="help-fab" aria-label="打开使用帮助" onClick={() => setHelpOpen(true)}><CircleHelp size={19} /></button>
