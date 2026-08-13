@@ -6,6 +6,28 @@ LexRead 是一个面向法学研究者的桌面端研究工作台。本实现以
 
 作者在上完法律检索课程后，萌生了开发法学论文阅读器的想法。LexRead 专注于承接检索后的研究环节，旨在解决阅读、摘录到写作过程中材料来源易丢失、研究思路易中断的问题。它以“研究项目”组织文献、笔记与写作草稿，通过保留原文出处与研究判断，降低重新核验材料的成本，让法学研究过程更清晰、可追溯。
 
+## 界面预览
+
+### 研究项目
+
+![LexRead 研究项目列表](docs/assets/readme-01-projects.png)
+
+### 项目概览
+
+![LexRead 项目概览](docs/assets/readme-02-project-overview.png)
+
+### 研究卡片
+
+![LexRead 研究卡片编辑](docs/assets/readme-03-research-card.png)
+
+### 项目资料库
+
+![LexRead 项目资料库](docs/assets/readme-04-materials.png)
+
+### 论文写作工作台
+
+![LexRead 论文写作工作台](docs/assets/readme-05-writing.png)
+
 ## 当前能力
 
 - 项目首页：新建研究项目或选择已有项目；项目是论文、裁判文书、卡片与成果的一级容器。
