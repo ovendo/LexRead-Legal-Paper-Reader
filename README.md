@@ -2,8 +2,6 @@
 
 # LexRead
 
-### 法学论文与裁判文书智能辅助阅读助手
-
 以研究任务为中心，在保留 PDF 原文的同时重建论文论证路线与裁判推理路线，<br>
 把阅读结果转化为可理解、可核验、可引用、可进入写作流程的结构化研究材料。
 
@@ -11,7 +9,7 @@
   <img src="docs/assets/demo-entry.svg" width="820" alt="立即进入 LexRead 在线演示">
 </a>
 
-### [▶ 立即进入在线演示](https://ovendo.github.io/LexRead-Legal-Paper-Reader/)
+
 
 无需安装，打开即可浏览预置研究项目。<br>
 PDF 上传、OCR 与 AI 分析等完整功能，请 [下载完整版](https://github.com/ovendo/LexRead-Legal-Paper-Reader/archive/refs/heads/main.zip) 体验。
