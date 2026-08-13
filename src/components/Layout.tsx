@@ -1,6 +1,7 @@
 import { ArrowRight, BookOpenCheck, BookOpenText, CheckCircle2, ChevronDown, CircleHelp, CloudDownload, CloudUpload, FilePenLine, FolderKanban, KeyRound, LayoutDashboard, Library, LoaderCircle, Menu, Plus, Settings, ShieldCheck, TableProperties, UserRound, X } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { getApiHealth, getAiSettings, saveAiSettings, testAiSettings, type ApiHealth, type AiSettings, type ProviderOptions } from "../api";
+import { DEMO_FEATURE_MESSAGE, FULL_VERSION_URL, IS_DEMO } from "../demo";
 import { useRouter } from "../router";
 import { useAppStore } from "../store";
 import { Button, Modal, cx } from "./UI";
@@ -22,35 +23,36 @@ export function TopNav() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [health, setHealth] = useState<ApiHealth | null>(null);
 
-  useEffect(() => { getApiHealth().then(setHealth).catch(() => setHealth(null)); }, []);
+  useEffect(() => { if (!IS_DEMO) getApiHealth().then(setHealth).catch(() => setHealth(null)); }, []);
   useEffect(() => {
-    const openSettings = () => setApiOpen(true);
+    const openSettings = () => IS_DEMO ? showToast(DEMO_FEATURE_MESSAGE) : setApiOpen(true);
     window.addEventListener("lexread:open-api-settings", openSettings);
     return () => window.removeEventListener("lexread:open-api-settings", openSettings);
   }, []);
 
-  const statusLabel = health === null ? "检查中" : health.configured ? "已配置" : "未配置";
+  const statusLabel = IS_DEMO ? "演示模式" : health === null ? "检查中" : health.configured ? "已配置" : "未配置";
 
   return <>
     <header className="top-nav">
       <button className="brand" onClick={() => navigate("/workspace")} aria-label="返回工作台">
         <span className="brand-mark"><span>L</span><span>R</span></span>
-        <span className="brand-name">LexRead<small>法研阅读器</small></span>
+        <span className="brand-name">LexRead<small>法律论文阅读器</small></span>
       </button>
       <nav className="top-links" aria-label="主导航">
         {topNav.map((item) => <button key={item.path} className={cx("top-link", routeActive(path, item.path) && "is-active")} onClick={() => navigate(item.path)}>{item.label}</button>)}
       </nav>
       <div className="top-actions">
-        <button className={cx("api-settings-trigger", health?.configured && "is-configured", health === null && "is-checking")} onClick={() => setApiOpen(true)}><KeyRound size={16} /><span>AI API</span><em>{statusLabel}</em><i /></button>
+        <button className={cx("api-settings-trigger", health?.configured && "is-configured", !IS_DEMO && health === null && "is-checking", IS_DEMO && "is-demo")} onClick={() => IS_DEMO ? showToast(DEMO_FEATURE_MESSAGE) : setApiOpen(true)}><KeyRound size={16} /><span>AI API</span><em>{statusLabel}</em><i /></button>
         <button className="profile-button" aria-expanded={profileOpen} onClick={() => setProfileOpen((open) => !open)}><span>张</span><em>张研究员</em><ChevronDown size={15} /></button>
         {profileOpen && <div className="profile-menu">
           <div><span>张</span><strong>张研究员<small>{cloudSync.status === "syncing" ? "快链同步中…" : "本地研究空间"}</small></strong></div>
-          <button disabled={cloudSync.status === "syncing"} onClick={() => void backupToFastLink()}><CloudUpload size={16} /><span>{cloudSync.status === "syncing" ? "正在备份…" : "备份研究资料到快链"}</span></button>
+          <button disabled={cloudSync.status === "syncing"} onClick={() => IS_DEMO ? showToast(DEMO_FEATURE_MESSAGE) : void backupToFastLink()}><CloudUpload size={16} /><span>{cloudSync.status === "syncing" ? "正在备份…" : "备份研究资料到快链"}</span></button>
           <button disabled={cloudSync.status === "syncing"} onClick={() => {
+            if (IS_DEMO) return showToast(DEMO_FEATURE_MESSAGE);
             if (window.confirm("将以快链备份替换本机的项目、标注、研究卡片和写作草稿。PDF 原件、解析全文和 API 密钥不会恢复，是否继续？")) void restoreFromFastLink();
           }}><CloudDownload size={16} /><span>从快链恢复研究资料</span></button>
           <p className="profile-cloud-note">仅同步项目、标注、卡片、写作草稿和任务；PDF 原件、解析全文与 API 密钥始终留在本机。</p>
-          <button onClick={() => { setApiOpen(true); setProfileOpen(false); }}><Settings size={16} /><span>AI API 设置</span></button>
+          <button onClick={() => { IS_DEMO ? showToast(DEMO_FEATURE_MESSAGE) : setApiOpen(true); setProfileOpen(false); }}><Settings size={16} /><span>AI API 设置</span></button>
           <button onClick={() => { window.dispatchEvent(new Event("lexread:open-help")); setProfileOpen(false); }}><CircleHelp size={16} /><span>使用帮助</span></button>
           <button onClick={() => { navigate("/workspace"); setProfileOpen(false); }}><FolderKanban size={16} /><span>返回项目列表</span></button>
         </div>}
@@ -177,7 +179,7 @@ export function ProjectContextNav({ projectId }: { projectId: string }) {
 
 export function ProjectSidebar({ mode = "workspace" }: { mode?: "workspace" | "project" }) {
   const { path, navigate } = useRouter();
-  const { state, activeProject, dispatch } = useAppStore();
+  const { state, activeProject, dispatch, showToast } = useAppStore();
   const projectLinks = [
     { label: "研究项目总览", icon: FolderKanban, path: `/workspace/projects/${activeProject.id}/overview` },
     { label: "文献与案例", icon: BookOpenText, path: `/workspace/projects/${activeProject.id}/materials` },
@@ -185,7 +187,7 @@ export function ProjectSidebar({ mode = "workspace" }: { mode?: "workspace" | "p
 
   return <aside className="sidebar">
     {mode === "project" && <button className="sidebar-back" onClick={() => navigate("/workspace")}><span>←</span> 返回工作台</button>}
-    <Button className="sidebar-create" onClick={() => navigate("/workspace/upload-parse")}><Plus size={17} /> 上传并分析文档</Button>
+    <Button className="sidebar-create" onClick={() => IS_DEMO ? showToast(DEMO_FEATURE_MESSAGE) : navigate("/workspace/upload-parse")}><Plus size={17} /> 上传并分析文档</Button>
     <div className="sidebar-section">
       <p className="sidebar-label">{mode === "project" ? activeProject.title : "项目快捷入口"}</p>
       {mode === "workspace" ? state.projects.map((project, index) => <button key={project.id} className={cx("sidebar-item", project.id === state.selectedProjectId && "is-active")} onClick={() => { dispatch({ type: "SELECT_PROJECT", projectId: project.id }); navigate(`/workspace/projects/${project.id}/overview`); }}>
@@ -207,6 +209,7 @@ export function AppShell({ children, sidebar = true, projectSidebar = false, ful
   }, []);
   return <div className="app-root">
     <TopNav />
+    {IS_DEMO && <div className="demo-banner" role="status"><strong>在线演示</strong><span>当前使用预置研究数据；上传 PDF、OCR 和 AI 分析请下载完整版体验。</span><a href={FULL_VERSION_URL} download>下载完整版</a></div>}
     <div className={cx("app-layout", !sidebar && "no-sidebar", full && "is-full")}>{sidebar && <ProjectSidebar mode={projectSidebar ? "project" : "workspace"} />}<main className="app-main">{children}</main></div>
     {state.toast && <div className="toast"><span>✓</span>{state.toast}</div>}
     <button className="help-fab" aria-label="打开使用帮助" onClick={() => setHelpOpen(true)}><CircleHelp size={19} /></button>

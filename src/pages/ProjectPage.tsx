@@ -7,6 +7,7 @@ import { useAppStore } from "../store";
 import type { ResearchDocument } from "../types";
 import { getProjectProgress } from "../researchProgress";
 import { deleteDocument, setDocumentArchived } from "../api";
+import { DEMO_FEATURE_MESSAGE, IS_DEMO } from "../demo";
 
 const statusCopy: Record<ResearchDocument["status"], { label: string; tone: "neutral" | "blue" | "amber" | "green" | "red" }> = {
   uploaded: { label: "等待解析", tone: "neutral" }, parsing: { label: "解析中", tone: "blue" }, ocr: { label: "OCR 中", tone: "blue" },
@@ -77,6 +78,10 @@ export function ProjectPage() {
   useEffect(() => { if (project.id !== state.selectedProjectId) dispatch({ type: "SELECT_PROJECT", projectId: project.id }); }, [dispatch, project.id, state.selectedProjectId]);
 
   const upload = (kind: "paper" | "judgment") => {
+    if (IS_DEMO) {
+      dispatch({ type: "SET_TOAST", message: DEMO_FEATURE_MESSAGE });
+      return;
+    }
     dispatch({ type: "SELECT_PROJECT", projectId: project.id });
     navigate(`/workspace/upload-parse?kind=${kind}`);
   };

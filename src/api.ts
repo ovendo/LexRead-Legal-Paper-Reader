@@ -1,4 +1,5 @@
 import type { AnalysisStatus, DocumentKind, LegalReadingGuide, OcrStatus, ReadingAnnotation, ReadingNode, ReadingStatus, ResearchDocument } from "./types";
+import { DEMO_FEATURE_MESSAGE, IS_DEMO } from "./demo";
 
 export type { ApiHealth, AiSettings, KimiSettings, ModelOption, ProviderOptions } from "./api-types";
 import type { ApiHealth, AiSettings, KimiSettings } from "./api-types";
@@ -225,6 +226,7 @@ export class ApiError extends Error {
 }
 
 async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  if (IS_DEMO) throw new ApiError(DEMO_FEATURE_MESSAGE, 503);
   const response = await fetch(path, init);
   const contentType = response.headers.get("content-type") ?? "";
   const payload = contentType.includes("application/json") ? await response.json() : null;
