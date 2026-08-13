@@ -4,6 +4,8 @@
 
 **从检索结果到可核验的研究成果，LexRead 把论文、裁判文书、研究卡片与写作草稿放进同一条可追溯的工作流。**
 
+[在线体验演示版](https://ovendo.github.io/LexRead-Legal-Paper-Reader/) · [下载完整版](https://github.com/ovendo/LexRead-Legal-Paper-Reader/archive/refs/heads/main.zip)
+
 `React` · `TypeScript` · `Vite` · `Express` · `PDF.js` · `Local-first`
 
 ![LexRead 项目概览](docs/assets/readme-02-project-overview.png)
